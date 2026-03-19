@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Smart Parking Dashboard</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+
+.parking-slot{
+width:120px;
+height:120px;
+border-radius:10px;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+font-weight:bold;
+box-shadow:0 4px 8px rgba(0,0,0,0.2);
+}
+
+.parking-slot.free{
+background:#28a745;
+color:white;
+}
+
+.parking-slot.occupied{
+background:#dc3545;
+color:white;
+}
+
+</style>
+
+</head>
+
+<body style="background:#f4f6f9;">
+
+<div class="container mt-5">
+
+<h2 class="text-center mb-4">🚗 Smart Parking Dashboard</h2>
+
+<div class="row mb-4">
+
+<div class="col-md-3">
+<div class="card bg-primary text-white">
+<div class="card-body">
+<h6>Total Slots</h6>
+<h3>{{total}}</h3>
+</div>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card bg-success text-white">
+<div class="card-body">
+<h6>Available Slots</h6>
+<h3>{{available}}</h3>
+</div>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card bg-info text-white">
+<div class="card-body">
+<h6>Vehicles Today</h6>
+<h3>{{today_count}}</h3>
+</div>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card bg-warning text-white">
+<div class="card-body">
+<h6>Revenue Today</h6>
+<h3>₹ {{revenue}}</h3>
+</div>
+</div>
+</div>
+
+</div>
+
+<a href="/add" class="btn btn-dark mb-3">Add Vehicle</a>
+
+<h4>🅿️ Live Parking Slot Map</h4>
+
+<div class="d-flex gap-3 mb-4">
+
+{% for slot in slot_map %}
+
+{% if slot.status == "occupied" %}
+
+<div class="parking-slot occupied">
+Slot {{slot.slot}}
+🚗
+</div>
+
+{% else %}
+
+<div class="parking-slot free">
+Slot {{slot.slot}}
+🅿️
+</div>
+
+{% endif %}
+
+{% endfor %}
+
+</div>
+
+<table class="table table-bordered text-center">
+
+<thead class="table-dark">
+
+<tr>
+<th>ID</th>
+<th>Vehicle</th>
+<th>Slot</th>
+<th>Entry</th>
+<th>Exit</th>
+<th>Fee</th>
+<th>QR</th>
+<th>Action</th>
+</tr>
+
+</thead>
+
+<tbody>
+
+{% for vehicle in vehicles %}
+
+<tr>
+
+<td>{{vehicle['id']}}</td>
+<td>{{vehicle['vehicle']}}</td>
+<td>{{vehicle['slot']}}</td>
+<td>{{vehicle['entry_time']}}</td>
+<td>{{vehicle['exit_time']}}</td>
+<td>{{vehicle['fee']}}</td>
+
+<td>
+<img src="/static/qrcodes/{{vehicle['vehicle']}}.png" width="60">
+</td>
+
+<td>
+
+{% if vehicle['exit_time']==None %}
+
+<a href="/exit/{{vehicle['id']}}" class="btn btn-danger btn-sm">
+Exit
+</a>
+
+{% else %}
+
+<span class="badge bg-success">Completed</span>
+
+{% endif %}
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+</body>
+</html>
